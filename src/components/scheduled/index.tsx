@@ -4,8 +4,12 @@ import { Button } from "../ui/button";
 import { ScheduledProvider, showScheduled } from "./list-form";
 import { ScheduledEditProvider, showScheduledEdit } from "./scheduled-form";
 
-export { ScheduledProvider, showScheduled };
-export { ScheduledEditProvider, showScheduledEdit };
+export {
+    ScheduledEditProvider,
+    ScheduledProvider,
+    showScheduled,
+    showScheduledEdit,
+};
 
 export default function Scheduled() {
     const t = useIntl();

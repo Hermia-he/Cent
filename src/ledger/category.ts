@@ -514,6 +514,48 @@ export const IncomeBillCategories: BillCategory[] = [
     //#endregion
 
     {
+        name: "Investment Yield",
+        id: "investment-yield",
+        type: "income",
+        icon: "icon-[mdi--chart-line]",
+        color: "#10b981",
+    },
+    //#region Investment Yield
+    {
+        name: "Fund Dividends",
+        id: "fund-dividends",
+        type: "income",
+        icon: "icon-[mdi--cash-multiple]",
+        color: "#10b981",
+        parent: "investment-yield",
+    },
+    {
+        name: "Stock Dividends",
+        id: "stock-dividends",
+        type: "income",
+        icon: "icon-[mdi--cash-plus]",
+        color: "#10b981",
+        parent: "investment-yield",
+    },
+    {
+        name: "Interest Income",
+        id: "interest-income",
+        type: "income",
+        icon: "icon-[mdi--bank-transfer-in]",
+        color: "#10b981",
+        parent: "investment-yield",
+    },
+    {
+        name: "Wealth Management",
+        id: "wealth-management-income",
+        type: "income",
+        icon: "icon-[mdi--chart-box-outline]",
+        color: "#10b981",
+        parent: "investment-yield",
+    },
+    //#endregion
+
+    {
         name: "Other",
         id: "other-income",
         type: "income",

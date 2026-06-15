@@ -3,9 +3,7 @@ import { Button } from "../ui/button";
 import { BudgetEditProvider, showBudgetEdit } from "./budget-form";
 import { BudgetProvider, showBudget } from "./list-form";
 
-export { BudgetProvider, showBudget };
-
-export { BudgetEditProvider, showBudgetEdit };
+export { BudgetEditProvider, BudgetProvider, showBudget, showBudgetEdit };
 
 export default function Budget() {
     const t = useIntl();

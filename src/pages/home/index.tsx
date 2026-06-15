@@ -16,6 +16,7 @@ import BudgetCard from "@/components/budget/card";
 import { HintTooltip } from "@/components/hint";
 import { PaginationIndicator } from "@/components/indicator";
 import Ledger from "@/components/ledger";
+import ShareBoard from "@/components/ledger/share-board";
 import Loading from "@/components/loading";
 import { Promotion } from "@/components/promotion";
 import WidgetPreview from "@/components/widget/preview";
@@ -136,9 +137,10 @@ export default function Page() {
     return (
         <div className="w-full h-full p-2 flex flex-col overflow-hidden page-show">
             <div className="flex flex-wrap flex-col w-full gap-2">
+                <ShareBoard viewDate={currentDate} />
                 <div
                     data-today-overview
-                    className="bg-stone-800 text-background dark:bg-foreground/20 dark:text-foreground relative h-20 w-full flex justify-end rounded-lg sm:flex-1 p-4"
+                    className="bg-gradient-to-r from-rose-500 to-orange-500 dark:from-rose-950/40 dark:to-orange-950/40 text-white relative h-20 w-full flex justify-end rounded-xl sm:flex-1 p-4 shadow-sm border border-rose-200/20 dark:border-rose-950/30"
                 >
                     <span className="absolute top-2 left-4">
                         {denseDate(currentDate)}

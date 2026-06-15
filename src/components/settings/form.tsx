@@ -24,6 +24,7 @@ import QuickEntrySettingsItem from "./quick-entry";
 import ThemeSettingsItem from "./theme";
 import UserSettingsItem from "./user";
 import VoiceSettingsItem from "./voice";
+import AssetAccountsSettingsItem from "./asset-accounts";
 
 function UserInfo() {
     const t = useIntl();
@@ -137,6 +138,7 @@ export default function SettingsForm({
                             {t("billing-functions")}
                         </div>
                         <div className="flex flex-col divide-y">
+                            <AssetAccountsSettingsItem />
                             <CategorySettingsItem />
                             <TagSettingsItem />
                             <Budget />

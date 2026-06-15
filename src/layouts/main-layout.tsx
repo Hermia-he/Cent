@@ -17,6 +17,7 @@ import {
     ScheduledProvider,
 } from "@/components/scheduled";
 import { Settings } from "@/components/settings";
+import { AssetAccountsProvider } from "@/components/settings/asset-accounts";
 import { SortableListProvider } from "@/components/sortable";
 import { SortableListWithEnableProvider } from "@/components/sortable/enable";
 import { SortableGroupProvider } from "@/components/sortable/group";
@@ -71,6 +72,7 @@ export default function MainLayout() {
                 <SortableListWithEnableProvider />
                 <SortableGroupProvider />
                 <Settings />
+                <AssetAccountsProvider />
                 <ImportPreviewProvider />
                 <WidgetEditProvider />
                 <CurrencyListProvider />

@@ -142,4 +142,4 @@ export default async function runWidget(
     }
 }
 
-export type { WidgetContext, WidgetData, WidgetEnv, RunWidgetOptions };
+export type { RunWidgetOptions, WidgetContext, WidgetData, WidgetEnv };

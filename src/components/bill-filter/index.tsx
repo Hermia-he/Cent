@@ -13,6 +13,4 @@ const confirms = createConfirmProvider(BillFilterView, {
 
 const [BillFilterViewProvider, showBillFilterView] = confirms;
 
-export { BillFilterViewProvider };
-
-export { showBillFilterView };
+export { BillFilterViewProvider, showBillFilterView };

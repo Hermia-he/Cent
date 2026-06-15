@@ -119,6 +119,7 @@ function Form({ onCancel }: { onCancel?: () => void }) {
                                         <a
                                             href={`https://github.com/${currentBookId}/settings/access`}
                                             target="_blank"
+                                            rel="noopener"
                                         >
                                             <i className="icon-[mdi--settings]" />
                                         </a>

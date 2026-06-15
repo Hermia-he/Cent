@@ -327,7 +327,7 @@ export async function requestAIForVoice(
 export {
     getAIConfig,
     getVoiceAIConfig,
-    parseOpenAIStream,
     parseGoogleStream,
+    parseOpenAIStream,
     requestAIWithConfig,
 };

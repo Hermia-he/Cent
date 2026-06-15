@@ -32,8 +32,8 @@ const TooltipClassName =
 
 export {
     Tooltip,
-    TooltipTrigger,
+    TooltipClassName,
     TooltipContent,
     TooltipProvider,
-    TooltipClassName,
+    TooltipTrigger,
 };

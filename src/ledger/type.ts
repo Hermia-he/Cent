@@ -13,11 +13,11 @@ import type {
 } from "./extra-type";
 
 export type {
+    BillFilter,
+    BillTagGroup,
+    Budget,
     CustomCurrency,
     PersonalMeta,
-    BillFilter,
-    Budget,
-    BillTagGroup,
     Scheduled,
 };
 
@@ -107,8 +107,17 @@ export type BillTag = {
     preferCurrency?: string;
 };
 
+export type AssetAccount = {
+    id: string;
+    name: string;
+    type: "cash" | "card" | "investment" | "wallet" | "other";
+    initialAmount: number; // 整数金额，10000:1
+};
+
 // 全局文件配置
 export type GlobalMeta = {
+    // 所有的资产账户 (如期初存款)
+    assets?: AssetAccount[];
     // 自定义过滤器，可以略过
     customFilters?: BillFilterView[];
     // 自定义预算，可以略过
