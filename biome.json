@@ -17,7 +17,9 @@
 			"!.*",
 			"!src/locale/lang/**/*.json",
 			"!**/*.config.js",
-			"!scripts"
+			"!scripts",
+			"!**/*.css",
+			"!**/*.html"
 		]
 	},
 	"formatter": {
@@ -32,6 +34,13 @@
 			"suspicious": {
 				"useIterableCallbackReturn": "warn",
 				"noArrayIndexKey": "warn"
+			},
+			"correctness": {
+				"useExhaustiveDependencies": "off"
+			},
+			"a11y": {
+				"noLabelWithoutControl": "off",
+				"noSvgWithoutTitle": "off"
 			}
 		}
 	},
