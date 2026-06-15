@@ -1,8 +1,8 @@
+import type dayjs from "dayjs";
 import React, { useMemo, useState } from "react";
-import dayjs from "dayjs";
+import { amountToNumber } from "@/ledger/bill";
 import { useLedgerStore } from "@/store/ledger";
 import { useUserStore } from "@/store/user";
-import { amountToNumber } from "@/ledger/bill";
 import { cn } from "@/utils";
 import { showAssetAccounts } from "../settings/asset-accounts";
 
@@ -25,16 +25,28 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
     }, [infos]);
 
     const initialAssetsTotal = useMemo(() => {
-        return amountToNumber(assetsList.reduce((sum, a) => sum + a.initialAmount, 0));
+        return amountToNumber(
+            assetsList.reduce((sum, a) => sum + a.initialAmount, 0),
+        );
     }, [assetsList]);
 
     // 2. 过滤当月支出与收入
     const monthExpenses = useMemo(() => {
-        return bills.filter((b) => b.type === "expense" && b.time >= monthStart && b.time <= monthEnd);
+        return bills.filter(
+            (b) =>
+                b.type === "expense" &&
+                b.time >= monthStart &&
+                b.time <= monthEnd,
+        );
     }, [bills, monthStart, monthEnd]);
 
     const monthIncomes = useMemo(() => {
-        return bills.filter((b) => b.type === "income" && b.time >= monthStart && b.time <= monthEnd);
+        return bills.filter(
+            (b) =>
+                b.type === "income" &&
+                b.time >= monthStart &&
+                b.time <= monthEnd,
+        );
     }, [bills, monthStart, monthEnd]);
 
     // 3. 计算历史收支（用于月期初余额计算）
@@ -59,7 +71,10 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
     // 4. 双人账目 AA 均分及总体收支统计
     const stats = useMemo(() => {
         const creatorsList = infos?.creators ?? [];
-        const userMap: Record<string | number, { name: string; avatar?: string }> = {};
+        const userMap: Record<
+            string | number,
+            { name: string; avatar?: string }
+        > = {};
 
         if (currentUser.id) {
             userMap[currentUser.id] = {
@@ -79,7 +94,8 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
         const expensesByCreator: Record<string | number, number> = {};
         for (const bill of monthExpenses) {
             const cid = bill.creatorId;
-            expensesByCreator[cid] = (expensesByCreator[cid] || 0) + bill.amount;
+            expensesByCreator[cid] =
+                (expensesByCreator[cid] || 0) + bill.amount;
         }
 
         const allUserIds = Array.from(
@@ -93,13 +109,16 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
         const userA_Id = allUserIds[0] || "userA";
         const userB_Id = allUserIds[1] || "userB";
 
-        const userA_Info = userMap[userA_Id] || { 
-            name: currentUser.id === userA_Id ? (currentUser.name || "我") : "成员 A", 
-            avatar: "", 
+        const userA_Info = userMap[userA_Id] || {
+            name:
+                currentUser.id === userA_Id
+                    ? currentUser.name || "我"
+                    : "成员 A",
+            avatar: "",
         };
-        const userB_Info = userMap[userB_Id] || { 
-            name: "另一半", 
-            avatar: "", 
+        const userB_Info = userMap[userB_Id] || {
+            name: "另一半",
+            avatar: "",
         };
 
         const totalA = amountToNumber(expensesByCreator[userA_Id] || 0);
@@ -124,16 +143,34 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
         const ratioB = totalExpenses > 0 ? (totalB / totalExpenses) * 100 : 50;
 
         // 5. 月度收支结算 (期初、期末余额计算)
-        const curMonthIncomeTotal = amountToNumber(monthIncomes.reduce((sum, b) => sum + b.amount, 0));
+        const curMonthIncomeTotal = amountToNumber(
+            monthIncomes.reduce((sum, b) => sum + b.amount, 0),
+        );
         const curMonthExpenseTotal = totalExpenses;
-        
-        const monthStartBalance = initialAssetsTotal + historicalStats.incomeBefore - historicalStats.expenseBefore;
-        const monthEndBalance = monthStartBalance + curMonthIncomeTotal - curMonthExpenseTotal;
+
+        const monthStartBalance =
+            initialAssetsTotal +
+            historicalStats.incomeBefore -
+            historicalStats.expenseBefore;
+        const monthEndBalance =
+            monthStartBalance + curMonthIncomeTotal - curMonthExpenseTotal;
         const netChange = curMonthIncomeTotal - curMonthExpenseTotal;
 
         return {
-            userA: { id: userA_Id, name: userA_Info.name, avatar: userA_Info.avatar, total: totalA, ratio: ratioA },
-            userB: { id: userB_Id, name: userB_Info.name, avatar: userB_Info.avatar, total: totalB, ratio: ratioB },
+            userA: {
+                id: userA_Id,
+                name: userA_Info.name,
+                avatar: userA_Info.avatar,
+                total: totalA,
+                ratio: ratioA,
+            },
+            userB: {
+                id: userB_Id,
+                name: userB_Info.name,
+                avatar: userB_Info.avatar,
+                total: totalB,
+                ratio: ratioB,
+            },
             totalExpenses,
             curMonthIncomeTotal,
             monthStartBalance,
@@ -143,9 +180,26 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
             diff,
             hasCollaborator: allUserIds.length >= 2 || creatorsList.length > 0,
         };
-    }, [monthExpenses, monthIncomes, infos, currentUser, initialAssetsTotal, historicalStats]);
+    }, [
+        monthExpenses,
+        monthIncomes,
+        infos,
+        currentUser,
+        initialAssetsTotal,
+        historicalStats,
+    ]);
 
-    const { userA, userB, totalExpenses, curMonthIncomeTotal, monthStartBalance, monthEndBalance, netChange, advice, hasCollaborator } = stats;
+    const {
+        userA,
+        userB,
+        totalExpenses,
+        curMonthIncomeTotal,
+        monthStartBalance,
+        monthEndBalance,
+        netChange,
+        advice,
+        hasCollaborator,
+    } = stats;
 
     return (
         <div className="w-full bg-gradient-to-br from-rose-50/90 via-orange-50/80 to-amber-50/90 dark:from-stone-900/90 dark:via-orange-950/20 dark:to-stone-900/90 border border-rose-100/80 dark:border-rose-950/30 rounded-2xl p-4 shadow-sm shadow-rose-100/20 dark:shadow-none flex flex-col gap-3 transition-all duration-300 hover:shadow-md relative animate-fade-in">
@@ -179,7 +233,7 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
                         "py-1.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer",
                         activeTab === "aa"
                             ? "bg-white dark:bg-stone-800 text-rose-600 dark:text-rose-455 shadow-xs border border-rose-100/20"
-                            : "text-stone-550 hover:text-stone-700 dark:hover:text-stone-300"
+                            : "text-stone-550 hover:text-stone-700 dark:hover:text-stone-300",
                     )}
                 >
                     <i className="icon-[mdi--scale-balance] text-sm"></i>
@@ -192,7 +246,7 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
                         "py-1.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer",
                         activeTab === "assets"
                             ? "bg-white dark:bg-stone-800 text-rose-600 dark:text-rose-455 shadow-xs border border-rose-100/20"
-                            : "text-stone-550 hover:text-stone-700 dark:hover:text-stone-300"
+                            : "text-stone-550 hover:text-stone-700 dark:hover:text-stone-300",
                     )}
                 >
                     <i className="icon-[mdi--piggy-bank-outline] text-sm"></i>
@@ -206,14 +260,18 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
                     {/* 本月共享总支出 */}
                     <div className="flex justify-between items-end">
                         <div className="flex flex-col gap-0.5">
-                            <span className="text-xs text-stone-500 dark:text-stone-400 font-medium">本月共享总支出</span>
+                            <span className="text-xs text-stone-500 dark:text-stone-400 font-medium">
+                                本月共享总支出
+                            </span>
                             <span className="text-2xl font-bold tracking-tight text-stone-800 dark:text-stone-100">
                                 ¥{totalExpenses.toFixed(2)}
                             </span>
                         </div>
                         {assetsList.length > 0 && (
                             <div className="flex flex-col items-end gap-0.5">
-                                <span className="text-xs text-stone-500 dark:text-stone-400 font-medium">月底预估结余</span>
+                                <span className="text-xs text-stone-500 dark:text-stone-400 font-medium">
+                                    月底预估结余
+                                </span>
                                 <span className="text-sm font-extrabold text-rose-600 dark:text-rose-400">
                                     ¥{monthEndBalance.toFixed(2)}
                                 </span>
@@ -249,7 +307,8 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
 
                             {/* Ratio Badge */}
                             <div className="text-[10px] font-bold text-stone-400 bg-stone-100 dark:bg-stone-800/80 px-2 py-0.5 rounded-md">
-                                {userA.ratio.toFixed(0)}% : {userB.ratio.toFixed(0)}%
+                                {userA.ratio.toFixed(0)}% :{" "}
+                                {userB.ratio.toFixed(0)}%
                             </div>
 
                             {/* User B */}
@@ -309,8 +368,15 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
                             <span className="text-[10px] text-stone-500 dark:text-stone-400 font-bold flex items-center gap-1">
                                 🐖 期初存款
                             </span>
-                            <span className="text-xs font-black text-stone-800 dark:text-stone-150 truncate" title={`¥${monthStartBalance.toFixed(2)}`}>
-                                ¥{monthStartBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            <span
+                                className="text-xs font-black text-stone-800 dark:text-stone-150 truncate"
+                                title={`¥${monthStartBalance.toFixed(2)}`}
+                            >
+                                ¥
+                                {monthStartBalance.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}
                             </span>
                         </div>
 
@@ -319,11 +385,20 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
                             <span className="text-[10px] text-stone-500 dark:text-stone-400 font-bold flex items-center gap-1">
                                 {netChange >= 0 ? "📈" : "📉"} 本月变动
                             </span>
-                            <span className={cn(
-                                "text-xs font-black truncate",
-                                netChange >= 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-455"
-                            )} title={`${netChange >= 0 ? "+" : ""}¥${netChange.toFixed(2)}`}>
-                                {netChange >= 0 ? "+" : ""}¥{netChange.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            <span
+                                className={cn(
+                                    "text-xs font-black truncate",
+                                    netChange >= 0
+                                        ? "text-emerald-600 dark:text-emerald-400"
+                                        : "text-rose-600 dark:text-rose-455",
+                                )}
+                                title={`${netChange >= 0 ? "+" : ""}¥${netChange.toFixed(2)}`}
+                            >
+                                {netChange >= 0 ? "+" : ""}¥
+                                {netChange.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}
                                 <span className="text-[8px] font-bold ml-0.5">
                                     ({netChange >= 0 ? "多了" : "少了"})
                                 </span>
@@ -335,8 +410,15 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
                             <span className="text-[10px] text-stone-500 dark:text-stone-400 font-bold flex items-center gap-1">
                                 💰 月底结余
                             </span>
-                            <span className="text-xs font-black text-rose-600 dark:text-rose-455 truncate" title={`¥${monthEndBalance.toFixed(2)}`}>
-                                ¥{monthEndBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            <span
+                                className="text-xs font-black text-rose-600 dark:text-rose-455 truncate"
+                                title={`¥${monthEndBalance.toFixed(2)}`}
+                            >
+                                ¥
+                                {monthEndBalance.toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2,
+                                })}
                             </span>
                         </div>
                     </div>
@@ -376,25 +458,40 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
                         ) : (
                             <div className="grid grid-cols-2 gap-2 text-xs animate-fade-in">
                                 {assetsList.map((account) => {
-                                    const typeIcon = 
-                                        account.type === "card" ? "💳" :
-                                        account.type === "investment" ? "📈" :
-                                        account.type === "wallet" ? "📱" :
-                                        account.type === "cash" ? "💵" : "🪙";
-                                    const typeLabel = 
-                                        account.type === "card" ? "银行卡" :
-                                        account.type === "investment" ? "理财" :
-                                        account.type === "wallet" ? "电子钱包" :
-                                        account.type === "cash" ? "现金" : "其它";
+                                    const typeIcon =
+                                        account.type === "card"
+                                            ? "💳"
+                                            : account.type === "investment"
+                                              ? "📈"
+                                              : account.type === "wallet"
+                                                ? "📱"
+                                                : account.type === "cash"
+                                                  ? "💵"
+                                                  : "🪙";
+                                    const typeLabel =
+                                        account.type === "card"
+                                            ? "银行卡"
+                                            : account.type === "investment"
+                                              ? "理财"
+                                              : account.type === "wallet"
+                                                ? "电子钱包"
+                                                : account.type === "cash"
+                                                  ? "现金"
+                                                  : "其它";
                                     return (
-                                        <div 
-                                            key={account.id} 
+                                        <div
+                                            key={account.id}
                                             className="flex items-center justify-between p-2.5 rounded-xl bg-white/40 dark:bg-stone-950/20 border border-stone-200/30 dark:border-stone-850/40 hover:bg-white/80 dark:hover:bg-stone-950/50 transition-colors shadow-2xs"
                                         >
                                             <div className="flex items-center gap-2 truncate">
-                                                <span className="text-sm flex-shrink-0">{typeIcon}</span>
+                                                <span className="text-sm flex-shrink-0">
+                                                    {typeIcon}
+                                                </span>
                                                 <div className="flex flex-col truncate">
-                                                    <span className="font-semibold text-stone-700 dark:text-stone-250 truncate text-[11px] leading-tight" title={account.name}>
+                                                    <span
+                                                        className="font-semibold text-stone-700 dark:text-stone-250 truncate text-[11px] leading-tight"
+                                                        title={account.name}
+                                                    >
                                                         {account.name}
                                                     </span>
                                                     <span className="text-[8px] text-stone-400 dark:text-stone-550 font-bold">
@@ -403,7 +500,12 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
                                                 </div>
                                             </div>
                                             <span className="font-black text-stone-850 dark:text-stone-100 flex-shrink-0 ml-1">
-                                                ¥{amountToNumber(account.initialAmount).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                                                ¥
+                                                {amountToNumber(
+                                                    account.initialAmount,
+                                                ).toLocaleString(undefined, {
+                                                    maximumFractionDigits: 0,
+                                                })}
                                             </span>
                                         </div>
                                     );
@@ -421,7 +523,8 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
                         📢 独立账本提示
                     </span>
                     <span>
-                        当前为您个人账本。若要共享，请在【设置】-【记账账本】点击【邀请】添加对方 GitHub 账号为协作者，并在对方设备上配置相同的 Token。
+                        当前为您个人账本。若要共享，请在【设置】-【记账账本】点击【邀请】添加对方
+                        GitHub 账号为协作者，并在对方设备上配置相同的 Token。
                     </span>
                 </div>
             )}
@@ -437,12 +540,16 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
                         >
                             <i className="icon-[mdi--close] text-xl"></i>
                         </button>
-                        
+
                         <div className="text-center">
-                            <h3 className="font-bold text-sm text-stone-800 dark:text-stone-100">手机扫码快速访问</h3>
-                            <p className="text-[10px] text-stone-400 dark:text-stone-500 mt-0.5">使用微信扫码，可直接用手机记账</p>
+                            <h3 className="font-bold text-sm text-stone-800 dark:text-stone-100">
+                                手机扫码快速访问
+                            </h3>
+                            <p className="text-[10px] text-stone-400 dark:text-stone-500 mt-0.5">
+                                使用微信扫码，可直接用手机记账
+                            </p>
                         </div>
-                        
+
                         <div className="w-[180px] h-[180px] bg-white p-2.5 rounded-xl border border-stone-100 dark:border-stone-850 flex items-center justify-center shadow-inner">
                             <img
                                 src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&color=f43f5e&data=${encodeURIComponent(window.location.href)}`}
@@ -453,7 +560,9 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
                         </div>
 
                         <div className="text-[10px] text-stone-550 dark:text-stone-400 text-center leading-relaxed px-1">
-                            提示：在手机微信中打开后，点击右上角菜单选择“<b>浮窗</b>”或“<b>添加到桌面</b>”即可像原生 App 一样快速使用。
+                            提示：在手机微信中打开后，点击右上角菜单选择“
+                            <b>浮窗</b>”或“<b>添加到桌面</b>”即可像原生 App
+                            一样快速使用。
                         </div>
                     </div>
                 </div>

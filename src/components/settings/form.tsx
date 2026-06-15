@@ -15,6 +15,7 @@ import { Button } from "../ui/button";
 import WidgetSettings from "../widget";
 import AboutSettingsItem, { AdvancedGuideItem } from "./about";
 import AgentApiSettingsItem from "./agent-api";
+import AssetAccountsSettingsItem from "./asset-accounts";
 import AssistantSettingsItem from "./assistant";
 import LabSettingsItem from "./lab";
 import LanguageSettingsItem from "./language";
@@ -24,7 +25,6 @@ import QuickEntrySettingsItem from "./quick-entry";
 import ThemeSettingsItem from "./theme";
 import UserSettingsItem from "./user";
 import VoiceSettingsItem from "./voice";
-import AssetAccountsSettingsItem from "./asset-accounts";
 
 function UserInfo() {
     const t = useIntl();
