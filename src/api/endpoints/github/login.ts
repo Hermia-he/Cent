@@ -62,7 +62,9 @@ export const createLoginAPI = () => {
             if (import.meta.env.DEV) {
                 const dummy = { accessToken: "dummy-token-for-dev" };
                 localStorage.setItem(LOCAL_TOKEN_KEY, JSON.stringify(dummy));
-                console.warn("[dev] No GitHub token found – using dummy token to allow UI rendering.");
+                console.warn(
+                    "[dev] No GitHub token found – using dummy token to allow UI rendering.",
+                );
                 return dummy;
             }
             // Production: enforce proper login
