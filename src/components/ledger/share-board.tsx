@@ -90,9 +90,10 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
             };
         }
 
-        // 统计每个人在当月的支出
+        // 统计每个人在当月的支出（排除个人支出，仅统计共享分摊支出）
         const expensesByCreator: Record<string | number, number> = {};
         for (const bill of monthExpenses) {
+            if (bill.extra?.isPersonal) continue;
             const cid = bill.creatorId;
             expensesByCreator[cid] =
                 (expensesByCreator[cid] || 0) + bill.amount;
@@ -143,10 +144,13 @@ export default function ShareBoard({ viewDate }: ShareBoardProps) {
         const ratioB = totalExpenses > 0 ? (totalB / totalExpenses) * 100 : 50;
 
         // 5. 月度收支结算 (期初、期末余额计算)
+        // 包含所有人本月的所有收支（共享 + 个人）
         const curMonthIncomeTotal = amountToNumber(
             monthIncomes.reduce((sum, b) => sum + b.amount, 0),
         );
-        const curMonthExpenseTotal = totalExpenses;
+        const curMonthExpenseTotal = amountToNumber(
+            monthExpenses.reduce((sum, b) => sum + b.amount, 0),
+        );
 
         const monthStartBalance =
             initialAssetsTotal +

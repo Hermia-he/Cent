@@ -32,7 +32,7 @@ export default function Login() {
 
     return createPortal(
         <div className="fixed inset-0 bg-gradient-to-tr from-rose-100 via-orange-50 to-amber-100 dark:from-stone-950 dark:via-stone-900 dark:to-orange-950/20 flex justify-center items-center z-[999] overflow-hidden p-4">
-            <div className="bg-white/80 dark:bg-stone-900/80 backdrop-blur-md w-full max-w-[360px] h-[520px] flex flex-col justify-between items-center rounded-2xl overflow-hidden shadow-2xl border border-white/20 dark:border-stone-800/50">
+            <div className="bg-white/80 dark:bg-stone-900/80 backdrop-blur-md w-full max-w-[360px] min-h-[520px] max-h-[90vh] flex flex-col justify-between items-center rounded-2xl overflow-y-auto shadow-2xl border border-white/20 dark:border-stone-800/50">
                 <Guide />
 
                 <div className="w-full px-6 pb-8 flex flex-col gap-4 flex-1 justify-center">

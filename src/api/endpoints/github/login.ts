@@ -55,8 +55,17 @@ export const createLoginAPI = () => {
 
     const _getToken = async () => {
         await loginFinished;
+        // Try to get a stored token first
         const token = getLocalToken();
         if (!token) {
+            // In development mode we fallback to a dummy token so the UI can render
+            if (import.meta.env.DEV) {
+                const dummy = { accessToken: "dummy-token-for-dev" };
+                localStorage.setItem(LOCAL_TOKEN_KEY, JSON.stringify(dummy));
+                console.warn("[dev] No GitHub token found – using dummy token to allow UI rendering.");
+                return dummy;
+            }
+            // Production: enforce proper login
             throw new Error("token not found");
         }
         if (token.expiresIn) {

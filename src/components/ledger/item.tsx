@@ -24,6 +24,8 @@ interface BaseBillItemProps {
     creatorLabel: string;
     /** 非本位币时传入的目标币种 */
     targetCurrency?: { symbol: string };
+    /** 是否为个人账单 */
+    isPersonal?: boolean;
     /** 账单基础字段 */
     type: Bill["type"];
     amount: Bill["amount"];
@@ -43,6 +45,7 @@ export function BaseBillItem({
     tags,
     creatorLabel,
     targetCurrency,
+    isPersonal,
     type,
     amount,
     time,
@@ -85,11 +88,19 @@ export function BaseBillItem({
                             ))}
                         </div>
                     </div>
-                    <div className="flex text-xs">
+                    <div className="flex text-xs items-center gap-1.5">
                         <div>{creatorLabel}</div>
+                        {isPersonal && (
+                            <div className="inline-flex items-center gap-0.5 text-[9px] text-stone-400 dark:text-stone-500 border border-stone-200 dark:border-stone-800 px-1 rounded bg-stone-50 dark:bg-stone-900/30">
+                                <i className="icon-[mdi--account] text-[10px]"></i>
+                                <span>个人</span>
+                            </div>
+                        )}
                         {comment && (
                             <>
-                                <div className="px-1">|</div>
+                                <div className="px-0.5 text-stone-300 dark:text-stone-700">
+                                    |
+                                </div>
                                 <div className="truncate">{comment}</div>
                             </>
                         )}
@@ -185,6 +196,7 @@ export default function BillItem({
             tags={tags}
             creatorLabel={isMe ? t("me") : (creator?.name ?? "unknown-user")}
             targetCurrency={currency}
+            isPersonal={bill.extra?.isPersonal}
             currencyAmount={bill.currency?.amount}
             type={bill.type}
             amount={bill.amount}

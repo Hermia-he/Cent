@@ -311,7 +311,7 @@ export default function EditorForm({
             input={monitorFocused}
         >
             <PopupLayout
-                className="h-full gap-2 pb-0 scrollbar-hidden"
+                className="min-h-[80vh] max-h-[90vh] overflow-y-auto gap-2 pb-0 scrollbar-hidden"
                 onBack={goBack}
                 title={
                     <div className="pl-[54px] w-full min-h-12 rounded-lg flex pt-2 pb-0 overflow-hidden scrollbar-hidden">
@@ -405,6 +405,41 @@ export default function EditorForm({
                     </div>
                 }
             >
+                {/* Personal/Shared toggle - prominent chip above categories */}
+                <div className="flex px-2 pt-1 pb-0 flex-shrink-0">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setBillState((prev) => ({
+                                ...prev,
+                                extra: {
+                                    ...prev.extra,
+                                    isPersonal: !prev.extra?.isPersonal,
+                                },
+                            }));
+                        }}
+                        className={cn(
+                            "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer border",
+                            billState.extra?.isPersonal
+                                ? "bg-stone-700 text-stone-200 border-stone-500"
+                                : "bg-rose-950/60 text-rose-300 border-rose-700/60",
+                        )}
+                    >
+                        <i
+                            className={cn(
+                                "size-3.5",
+                                billState.extra?.isPersonal
+                                    ? "icon-[mdi--account]"
+                                    : "icon-[mdi--account-multiple]",
+                            )}
+                        />
+                        <span>
+                            {billState.extra?.isPersonal
+                                ? t("personal-bill")
+                                : t("shared-bill")}
+                        </span>
+                    </button>
+                </div>
                 {/* categories */}
                 <div className="flex-1 flex-shrink-0 overflow-y-auto min-h-[80px] scrollbar-hidden flex flex-col px-2 text-sm font-medium gap-2">
                     <div className="flex flex-col min-h-[80px] grow-[2] shrink overflow-y-auto scrollbar-hidden w-full">
@@ -617,6 +652,7 @@ export default function EditorForm({
                                     }}
                                 />
                             </div>
+
                         </div>
                         <RemarkHint
                             recommends={predictComments}

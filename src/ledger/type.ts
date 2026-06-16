@@ -67,6 +67,7 @@ export type Bill = {
     /** 其他额外信息 */
     extra?: {
         scheduledId?: string;
+        isPersonal?: boolean;
     };
 };
 
